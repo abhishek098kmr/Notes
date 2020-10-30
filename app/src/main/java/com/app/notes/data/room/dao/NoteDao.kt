@@ -1,21 +1,15 @@
 package com.app.notes.data.room.dao
 
-import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import androidx.room.*
 import com.app.notes.data.room.entity.Note
-import com.app.notes.data.room.entity.User
 
 @Dao
-interface UserNoteDao {
+interface NoteDao {
 
-    @Query("SELECT * FROM users WHERE userId = :userId")
-    fun getUser(userId: String): LiveData<User>
 
     @Query("SELECT * FROM notes WHERE userId = :userId ORDER BY modified DESC")
-    fun getUserNotes(userId: String): LiveData<List<Note>>
-
-    @Insert
-    suspend fun addUser(user: User)
+    fun getUserNotes(userId: String): DataSource.Factory<Int,Note>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addNote(note: Note)
@@ -25,4 +19,7 @@ interface UserNoteDao {
 
     @Delete
     suspend fun deleteNote(note: Note)
+
+    @Query("SELECT * FROM notes WHERE userId=:userId AND (title LIKE :userInput OR description LIKE :userInput)")
+    fun searchNotes(userId: String, userInput: String): DataSource.Factory<Int,Note>
 }

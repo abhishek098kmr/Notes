@@ -12,6 +12,7 @@ import com.app.notes.ui.view.fragments.LoginFragment
 import com.app.notes.ui.view.fragments.NotesListFragment
 import com.app.notes.utils.Constants
 import com.app.notes.utils.PreferenceUtil
+import com.app.notes.utils.Util
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), FragmentListener {
@@ -89,6 +90,7 @@ class MainActivity : AppCompatActivity(), FragmentListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
+            Util.hideKeyboard(this)
             onBackPressed()
         }
         return super.onOptionsItemSelected(item)
@@ -161,4 +163,5 @@ class MainActivity : AppCompatActivity(), FragmentListener {
     override fun onNoteAdded() {
         onBackPressed()
     }
+
 }

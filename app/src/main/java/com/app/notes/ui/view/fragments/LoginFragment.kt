@@ -3,6 +3,7 @@ package com.app.notes.ui.view.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,9 +38,8 @@ class LoginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = activity!!.run {
+        viewModel =
             ViewModelProviders.of(this).get(MainViewModel::class.java)
-        }
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
@@ -47,7 +47,7 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         configureGoogleSignInClient()
-        view.btn_sign_in.setSize(SignInButton.SIZE_STANDARD)
+        view.btn_sign_in.setSize(SignInButton.SIZE_WIDE)
         view.btn_sign_in.setOnClickListener {
             signInWithGoogle()
         }
@@ -76,14 +76,17 @@ class LoginFragment : Fragment() {
 
     private fun signInWithGoogle() {
         // if last signin account details found then account will not null
-        val account = GoogleSignIn.getLastSignedInAccount(activity!!)
-        if (account != null) {
-            validateUser(account.id)
-        } else {
-            // Sign In with new account
-            val signInIntent: Intent = mGoogleSignInClient.signInIntent
-            startActivityForResult(signInIntent, Constants.GOOGLE_SIGN_IN_REQUEST_CODE)
-        }
+        /* val account = GoogleSignIn.getLastSignedInAccount(activity!!)
+         if (account != null) {
+             validateUser(account.id)
+         } else {
+             // Sign In with new account
+             val signInIntent: Intent = mGoogleSignInClient.signInIntent
+             startActivityForResult(signInIntent, Constants.GOOGLE_SIGN_IN_REQUEST_CODE)
+         }*/
+        mGoogleSignInClient.signOut()
+        val signInIntent: Intent = mGoogleSignInClient.signInIntent
+        startActivityForResult(signInIntent, Constants.GOOGLE_SIGN_IN_REQUEST_CODE)
     }
 
     /*
@@ -94,11 +97,12 @@ class LoginFragment : Fragment() {
 
 
     private fun validateUser(id: String?) {
-        viewModel.getUser(userId = id!!).observe(this, Observer {
+        viewModel.getUser(userId = id!!).observe(viewLifecycleOwner, Observer {
             if (it == null) {
                 val user = User(userId = id)
                 viewModel.addUser(user)
             }
+            Log.e("login_id",id)
             PreferenceUtil.putAny(Constants.PREF_USER_ID, id)
             PreferenceUtil.putAny(Constants.PREF_IS_LOGGED_IN, true)
             callBackListener?.replaceFragment(NotesListFragment(), false)

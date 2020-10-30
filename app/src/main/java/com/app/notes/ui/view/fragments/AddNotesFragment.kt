@@ -2,11 +2,10 @@ package com.app.notes.ui.view.fragments
 
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.app.notes.R
@@ -19,6 +18,7 @@ import com.app.notes.utils.Util
 import kotlinx.android.synthetic.main.fragment_add_notes.*
 import kotlinx.android.synthetic.main.fragment_add_notes.view.*
 
+
 /**
  * A simple [Fragment] subclass.
  */
@@ -27,7 +27,7 @@ class AddNotesFragment : Fragment() {
     private lateinit var viewModel: MainViewModel
     private lateinit var etTitle: EditText
     private lateinit var etDescription: EditText
-    private lateinit var btnAddNote:Button
+    private lateinit var btnAddNote: Button
     private var note = null as Note?
 
     /*
@@ -44,6 +44,17 @@ class AddNotesFragment : Fragment() {
             fragment.arguments = bundle
             return fragment
         }
+    }
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        menu.clear()
     }
 
 
@@ -64,13 +75,13 @@ class AddNotesFragment : Fragment() {
         note = arguments?.getParcelable(Constants.KEY_NOTE) as? Note
         etTitle = view.et_title
         etDescription = view.et_description
-        btnAddNote=view.btn_add_note
+        btnAddNote = view.btn_add_note
         note?.let {
             setDataToUI()
         }
         btn_add_note.setOnClickListener {
             if (isValidated()) {
-                Util.hideKeyboard(activity!!)
+                Util.hideKeyboard(activity as AppCompatActivity?)
                 addNoteInDatabase()
             }
         }
@@ -80,7 +91,7 @@ class AddNotesFragment : Fragment() {
     private fun setDataToUI() {
         etTitle.setText(note?.title)
         etDescription.setText(note?.description)
-        btnAddNote.text=getString(R.string.text_update_note)
+        btnAddNote.text = getString(R.string.text_update_note)
 
 
     }
@@ -123,15 +134,15 @@ class AddNotesFragment : Fragment() {
 
     private fun addNoteInDatabase() {
         if (note != null) {
-            note?.title = etTitle.text.toString()
-            note?.description = etDescription.text.toString()
+            note?.title = etTitle.text.toString().trim()
+            note?.description = etDescription.text.toString().trim()
             note?.modified = System.currentTimeMillis()
             viewModel.updateNote(note!!)
             Util.showToast(activity!!, getString(R.string.text_note_updated))
         } else {
             val note = Note(
-                etTitle.text.toString(),
-                etDescription.text.toString(),
+                etTitle.text.toString().trim(),
+                etDescription.text.toString().trim(),
                 PreferenceUtil.getString(Constants.PREF_USER_ID, "")
             )
             viewModel.addNote(note)

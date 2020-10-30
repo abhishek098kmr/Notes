@@ -5,6 +5,8 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:orientation="vertical"
+    android:focusableInTouchMode="true"
+    android:descendantFocusability="beforeDescendants"
     android:padding="@dimen/dimen_20dp"
     tools:context=".ui.view.fragments.AddNotesFragment">
 
@@ -19,8 +21,8 @@
             android:layout_height="wrap_content"
             android:background="@null"
             android:importantForAutofill="no"
-            android:inputType="text"
-            android:maxLength="20"
+            android:inputType="text|textNoSuggestions"
+            android:maxLength="30"
             android:padding="@dimen/dimen_10dp"
             android:textColor="@android:color/black"
             android:textSize="@dimen/text_size_15sp" />
@@ -43,7 +45,7 @@
             android:layout_height="wrap_content"
             android:background="@null"
             android:importantForAutofill="no"
-            android:inputType="text"
+            android:inputType="text|textNoSuggestions"
             android:maxLength="300"
             android:padding="@dimen/dimen_10dp"
             android:textColor="@android:color/black"

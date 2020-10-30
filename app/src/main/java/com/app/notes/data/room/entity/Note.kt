@@ -10,10 +10,10 @@ import kotlinx.android.parcel.Parcelize
 class Note(
     var title: String,
     var description: String,
-    var userId: String):Parcelable {
+    var userId: String,
     @PrimaryKey(autoGenerate = true)
-    var id: Int = 0
-    var isPinned: Boolean = false
-    var created: Long = System.currentTimeMillis()
+    var id: Int = 0,
+    var isPinned: Boolean = false,
+    var created: Long = System.currentTimeMillis(),
     var modified: Long = System.currentTimeMillis()
-}
+) : Parcelable

@@ -24,7 +24,8 @@ object PreferenceUtil {
         return sharedPreferences?.getBoolean(key, defaultValue)!!
     }
 
-    fun remove(key: String) {
-        sharedPreferences?.edit { remove(key) }
+
+    fun clear() {
+        sharedPreferences?.edit { clear() }
     }
 }

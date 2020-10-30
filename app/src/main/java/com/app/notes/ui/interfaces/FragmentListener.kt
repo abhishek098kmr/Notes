@@ -6,5 +6,4 @@ interface FragmentListener {
     fun addFragment(fragment: Fragment, isAddBackStack:Boolean,isUpdate: Boolean)
     fun replaceFragment(fragment: Fragment, isAddBackStack:Boolean)
     fun onNoteAdded()
-
 }

@@ -1,52 +1,76 @@
 package com.app.notes.ui.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.app.Application
+import androidx.lifecycle.*
+import androidx.paging.PagedList
+import com.app.notes.data.repository.NotesRepository
+import com.app.notes.data.repository.UserRepository
+import com.app.notes.data.room.AppDatabase
 import com.app.notes.data.room.entity.Note
 import com.app.notes.data.room.entity.User
-import com.app.notes.data.repository.MainRepository
-import com.app.notes.data.room.AppDatabase
+import com.app.notes.utils.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
-
-    private var repository: MainRepository
-    private var userNotes: LiveData<List<Note>>
+class MainViewModel(application: Application) : AndroidViewModel(application) {
+    private var noteRepository: NotesRepository
+    private var userRepository: UserRepository
+    lateinit var userNotes: LiveData<PagedList<Note>>
+     val getUserNotes = MutableLiveData<String>()
 
     init {
-        val userNoteDao = AppDatabase.getDatabase().UserNoteDao()
-        repository = MainRepository(userNoteDao)
-        userNotes = repository.userNotes
+        val database = AppDatabase.getDatabase(application)
+        userRepository = UserRepository(database.userDao())
+        noteRepository = NotesRepository(database.noteDao())
+
     }
 
-    fun getUserNotes(): LiveData<List<Note>> {
-        return userNotes
+
+    fun initializeNotes() {
+        val config = PagedList.Config.Builder()
+            .setPageSize(Constants.PAGE_LIMIT)
+            .setEnablePlaceholders(false)
+            .build()
+        userNotes = Transformations.switchMap(getUserNotes) { input ->
+            if (input.isEmpty()) {
+                noteRepository.getUserNotes(config)
+            } else {
+                noteRepository.searchNotes(input, config)
+            }
+        }
     }
+/*
+
+    fun getUserNotes(searchKeyWord: String): LiveData<List<Note>> {
+        return noteRepository.getUserNotes(searchKeyWord)
+    }
+*/
 
 
     fun addUser(user: User) = viewModelScope.launch(Dispatchers.IO) {
-        repository.addUser(user)
+        userRepository.addUser(user)
+    }
+
+    fun getUser(userId: String): LiveData<User> {
+        return userRepository.getUser(userId)
     }
 
 
     fun addNote(note: Note) = viewModelScope.launch(Dispatchers.IO) {
-        repository.addNote(note)
+        noteRepository.addNote(note)
     }
 
     fun updateNote(note: Note) = viewModelScope.launch(Dispatchers.IO) {
-        repository.updateNote(note)
+        noteRepository.updateNote(note)
     }
 
 
     fun deleteNote(note: Note) = viewModelScope.launch(Dispatchers.IO) {
-        repository.deleteNote(note)
+        noteRepository.deleteNote(note)
     }
 
-    fun getUser(userId: String): LiveData<User> {
-        return repository.getUser(userId)
-    }
-
+    /* fun searchNotes(searchKeyWord: String): LiveData<List<Note>> {
+         return noteRepository.searchNotes(searchKeyWord)
+     }*/
 
 }
