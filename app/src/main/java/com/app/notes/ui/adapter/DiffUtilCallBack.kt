@@ -9,8 +9,12 @@ class DiffUtilCallBack : DiffUtil.ItemCallback<Note>() {
     }
 
     override fun areContentsTheSame(oldItem: Note, newItem: Note): Boolean {
-        return oldItem.title == newItem.title
+        return oldItem == newItem
+        /*oldItem.title == newItem.title
                 && oldItem.description == newItem.description
+                && oldItem.isPinned==newItem.isPinned
+                && oldItem.modified==newItem.modified*/
+
     }
 
 }

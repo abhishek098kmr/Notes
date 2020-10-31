@@ -24,4 +24,5 @@
     <string name="text_pinned">Pinned</string>
     <string name="text_search_your_notes">Search your notes</string>
     <string name="error_empty_notes">No Notes Available</string>
+    <string name="text_pinned_notes">Pinned Notes</string>
 </resources>

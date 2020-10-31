@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Entity(tableName = "notes")
 @Parcelize
-class Note(
+data class Note(
     var title: String,
     var description: String,
     var userId: String,
@@ -15,5 +15,6 @@ class Note(
     var id: Int = 0,
     var isPinned: Boolean = false,
     var created: Long = System.currentTimeMillis(),
-    var modified: Long = System.currentTimeMillis()
+    var modified: Long = System.currentTimeMillis(),
+    var modifiedPinned: Long = System.currentTimeMillis()
 ) : Parcelable

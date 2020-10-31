@@ -16,7 +16,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private var noteRepository: NotesRepository
     private var userRepository: UserRepository
     lateinit var userNotes: LiveData<PagedList<Note>>
-     val getUserNotes = MutableLiveData<String>()
+    val getUserNotes = MutableLiveData<String>()
 
     init {
         val database = AppDatabase.getDatabase(application)
@@ -60,14 +60,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         noteRepository.addNote(note)
     }
 
-    fun updateNote(note: Note) = viewModelScope.launch(Dispatchers.IO) {
-        noteRepository.updateNote(note)
+    fun updateNote(id: Int, title: String, description:String, modified:Long) = viewModelScope.launch(Dispatchers.IO) {
+        noteRepository.updateNote(id,title, description,modified)
+    }
+
+    fun updatePinnedStatus(id: Int, isPinned: Boolean,modified: Long) = viewModelScope.launch(Dispatchers.IO) {
+        noteRepository.updatedPinnedStatus(id, isPinned,modified)
     }
 
 
     fun deleteNote(note: Note) = viewModelScope.launch(Dispatchers.IO) {
         noteRepository.deleteNote(note)
     }
+
 
     /* fun searchNotes(searchKeyWord: String): LiveData<List<Note>> {
          return noteRepository.searchNotes(searchKeyWord)

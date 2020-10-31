@@ -105,14 +105,14 @@ class AddNotesFragment : Fragment() {
 
     private fun isValidated(): Boolean {
         when {
-            etTitle.text.isEmpty() -> {
+            etTitle.text.toString().trim().isEmpty() -> {
                 Util.showToast(
                     activity!!,
                     getString(R.string.error_empty_title)
                 )
                 return false
             }
-            etDescription.text.isEmpty() -> {
+            etDescription.text.toString().trim().isEmpty() -> {
                 Util.showToast(
                     activity!!,
                     getString(R.string.error_empty_description)
@@ -134,10 +134,10 @@ class AddNotesFragment : Fragment() {
 
     private fun addNoteInDatabase() {
         if (note != null) {
-            note?.title = etTitle.text.toString().trim()
-            note?.description = etDescription.text.toString().trim()
-            note?.modified = System.currentTimeMillis()
-            viewModel.updateNote(note!!)
+         //   note?.title = etTitle.text.toString().trim()
+         //   note?.description = etDescription.text.toString().trim()
+          //  note?.modified = System.currentTimeMillis()
+            viewModel.updateNote(note!!.id,etTitle.text.toString().trim(),etDescription.text.toString().trim(),System.currentTimeMillis())
             Util.showToast(activity!!, getString(R.string.text_note_updated))
         } else {
             val note = Note(

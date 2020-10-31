@@ -43,10 +43,12 @@ class NotesListAdapter(
 
     }
 
+
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvTitle: TextView = itemView.tv_title
         val tvDescription: TextView = itemView.tv_description
         val tvPinned: TextView = itemView.tv_pin
 
     }
+
 }

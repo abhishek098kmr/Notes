@@ -38,7 +38,7 @@ class NotesListFragment : Fragment() {
     private lateinit var tvNoNotes: TextView
     private lateinit var mAdapter: NotesListAdapter
     private lateinit var notesList: ArrayList<Note>
-    private var listSize=0
+    private var listSize = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,7 +79,7 @@ class NotesListFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                getNotes(newText)
+                getNotes("%$newText%".trim())
                 return true
             }
         })
@@ -171,8 +171,11 @@ class NotesListFragment : Fragment() {
         }
         dialog.setContentView(view)
         view.tv_pin.setOnClickListener {
-            note.isPinned = !note.isPinned
-            viewModel.updateNote(note)
+            if (note.isPinned){
+                viewModel.updatePinnedStatus(note.id,false,note.modified)
+            }else{
+                viewModel.updatePinnedStatus(note.id,true,System.currentTimeMillis())
+            }
             dialog.cancel()
         }
         view.tv_update.setOnClickListener {
@@ -239,16 +242,16 @@ class NotesListFragment : Fragment() {
         mAdapter.submitList(it)
         if (it?.size!! > 0) {
             tvNoNotes.visibility = View.GONE
-            if (listSize<= it.size) {
+            if (listSize <= it.size) {
                 Handler().postDelayed({
                     rvNotes.scrollToPosition(0)
 
-                },Constants.SCROOL_DELAY)
+                }, Constants.SCROOL_DELAY)
             }
         } else {
             tvNoNotes.visibility = View.VISIBLE
         }
-        listSize= it.size
+        listSize = it.size
     }
 
 
